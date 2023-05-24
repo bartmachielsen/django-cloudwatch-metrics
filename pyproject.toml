@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-cloudwatch-metrics"
-version = "0.0.1"
+version = "0.0.2"
 description = "Metric tracking in Django using caching and CloudWatch"
 authors = ["Bart Machielsen <bartmachielsen@gmail.com>"]
 license = "MIT"
@@ -11,15 +11,9 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.7"
-django = "^2.1"
-boto3 = "^1.20.0"
-deepmerge = "^0.3.0"
-PyYAML = "^5.4.1"
-structlog = "^21.5.0"
-colorama = "^0.4.4"
-pydantic = "^1.9.0"
-tqdm = "^4.65.0"
+python = ">=3.6.2"
+django = "*"
+boto3 = "*"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
