@@ -1,1 +1,4 @@
-/.idea/
+.idea
+venv
+dist
+db.sqlite3
