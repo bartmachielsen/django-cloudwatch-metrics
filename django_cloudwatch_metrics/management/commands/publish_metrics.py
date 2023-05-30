@@ -43,10 +43,12 @@ def publish_metrics():
         )
 
     if metric_data:
-        cloudwatch.put_metric_data(
-            Namespace=NAMESPACE,
-            MetricData=metric_data
-        )
+        # split in batches of max 1000
+        for i in range(0, len(metric_data), 1000):
+            cloudwatch.put_metric_data(
+                Namespace=NAMESPACE,
+                MetricData=metric_data[i:i+1000]
+            )
 
     metric_aggregations.delete()
     logger.info("Published metrics to CloudWatch")
