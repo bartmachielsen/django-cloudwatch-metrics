@@ -1,4 +1,5 @@
 import logging
+import time
 from datetime import datetime, timedelta
 
 import boto3
@@ -57,5 +58,18 @@ def publish_metrics():
 class Command(BaseCommand):
     help = 'Publishes metrics to CloudWatch'
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--continuously',
+            action='store_true',
+            help='Continuously publish metrics to CloudWatch',
+        )
+
     def handle(self, *args, **options):
-        publish_metrics()
+        while True:
+            publish_metrics()
+
+            if not options['continuously']:
+                break
+
+            time.sleep(60)
