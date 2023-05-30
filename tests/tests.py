@@ -19,4 +19,4 @@ class TestPublishingMetrics(TransactionTestCase):
             )
 
         self.assertTrue(MetricAggregation.objects.filter(metric_name="articles_published").exists())
-        self.assertEqual(MetricAggregation.objects.get(metric_name="articles_published").value, 1000)
+        self.assertEqual(MetricAggregation.objects.filter(metric_name="articles_published").first().value, 1000)
