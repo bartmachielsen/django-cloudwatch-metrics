@@ -21,12 +21,12 @@ def publish_metrics():
 
     metric_aggregations = MetricAggregation.objects.filter(datetime_period__lte=datetime.now(pytz.utc) - timedelta(minutes=1))
 
-    for datetime_period, metric_name, value, dimension_name, dimension_value in metric_aggregations.values_list(
-        "datetime_period", "metric_name", "value", "dimension_name", "dimension_value"
+    for datetime_period, metric_name, value, dimension_data in metric_aggregations.values_list(
+        "datetime_period", "metric_name", "value", "dimension_data"
     ):
         logger.info(
             f"Publishing metric: {metric_name} " +
-            (f"({dimension_name}:{dimension_value}) " if dimension_name and dimension_value else "") +
+            (f"({dimension_data} " if dimension_data else "") +
             f"with value: {value} at {datetime_period}"
         )
         metric_data.append(
@@ -36,8 +36,9 @@ def publish_metrics():
                     {
                         "Name": dimension_name,
                         "Value": dimension_value
-                    },
-                ] if dimension_name and dimension_value else [],
+                    }
+                    for dimension_name, dimension_value in (dimension_data or {}).items()
+                ],
                 "Timestamp": datetime_period,
                 "Value": value
             }
