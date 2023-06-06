@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-cloudwatch-metrics"
-version = "0.0.7"
+version = "0.0.8"
 description = "Metric tracking in Django using caching and CloudWatch"
 authors = ["Bart Machielsen <bartmachielsen@gmail.com>"]
 license = "MIT"

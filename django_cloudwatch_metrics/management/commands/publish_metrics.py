@@ -38,6 +38,7 @@ def publish_metrics():
                         "Value": dimension_value
                     }
                     for dimension_name, dimension_value in (dimension_data or {}).items()
+                    if dimension_name and dimension_value
                 ],
                 "Timestamp": datetime_period,
                 "Value": value
