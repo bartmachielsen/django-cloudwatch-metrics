@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import logging
 from datetime import datetime
 from typing import Optional
 
@@ -22,16 +23,21 @@ def increment(metric_name: str, value: int, **kwargs):
         kwargs,
     )
 
-    metric_aggregation, created = MetricAggregation.objects.select_for_update().get_or_create(
-        aggregation_key=aggregation_key,
-        defaults={
-            "datetime_period":  datetime_period,
-            "metric_name": metric_name,
-            "dimension_data": kwargs,
-            "value": value,
-        }
-    )
+    try:
+        metric_aggregation, created = MetricAggregation.objects.select_for_update().get_or_create(
+            aggregation_key=aggregation_key,
+            defaults={
+                "datetime_period":  datetime_period,
+                "metric_name": metric_name,
+                "dimension_data": kwargs,
+                "value": value,
+            }
+        )
+    except Exception as e:
+        logging.warning(e)
+        metric_aggregation = MetricAggregation.objects.select_for_update().filter(aggregation_key=aggregation_key).first()
+        created = False
 
-    if not created:
+    if not created and metric_aggregation is not None:
         metric_aggregation.value = F("value") + value
         metric_aggregation.save(update_fields=["value"])
