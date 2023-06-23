@@ -7,6 +7,7 @@ from typing import Optional
 import pytz
 from django.db.models import F
 from django.db.transaction import atomic
+from django.conf import settings
 
 from django_cloudwatch_metrics.hashing import create_cache_key
 from django_cloudwatch_metrics.models import MetricAggregation
@@ -16,6 +17,9 @@ from django_cloudwatch_metrics.models import MetricAggregation
 def increment(metric_name: str, value: int, **kwargs):
     """Publishes a metric increment."""
     datetime_period = datetime.now(pytz.utc).replace(second=0, microsecond=0)
+
+    if settings and hasattr(settings, "DJANGO_CLOUDWATCH_METRICS") and not settings.DJANGO_CLOUDWATCH_METRICS:
+        return
 
     aggregation_key = create_cache_key(
         metric_name,
