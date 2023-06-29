@@ -21,6 +21,9 @@ def increment(metric_name: str, value: int, **kwargs):
     if settings and hasattr(settings, "DJANGO_CLOUDWATCH_METRICS") and not settings.DJANGO_CLOUDWATCH_METRICS:
         return
 
+    # Convert all kwargs to strings
+    kwargs = {k: str(v) for k, v in kwargs.items()}
+
     aggregation_key = create_cache_key(
         metric_name,
         datetime_period,
