@@ -19,7 +19,12 @@ def publish_metrics():
     cloudwatch = boto3.client("cloudwatch")
     metric_data = []
 
-    metric_aggregations = MetricAggregation.objects.filter(datetime_period__lte=datetime.now(pytz.utc) - timedelta(minutes=1))
+    if settings and hasattr(settings, "DJANGO_CLOUDWATCH_ACCURACY_MINUTES"):
+        accuracy_in_minutes = settings.DJANGO_CLOUDWATCH_ACCURACY_MINUTES
+    else:
+        accuracy_in_minutes = 1
+
+    metric_aggregations = MetricAggregation.objects.filter(datetime_period__lt=datetime.now(pytz.utc) - timedelta(minutes=accuracy_in_minutes))
 
     for datetime_period, metric_name, value, dimension_data in metric_aggregations.values_list(
         "datetime_period", "metric_name", "value", "dimension_data"

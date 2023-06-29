@@ -18,6 +18,12 @@ def increment(metric_name: str, value: int, **kwargs):
     """Publishes a metric increment."""
     datetime_period = datetime.now(pytz.utc).replace(second=0, microsecond=0)
 
+    if settings and hasattr(settings, "DJANGO_CLOUDWATCH_ACCURACY_MINUTES"):
+        accuracy_in_minutes = settings.DJANGO_CLOUDWATCH_ACCURACY_MINUTES
+
+        # Round datetime_period to the accuracy_in_minutes
+        datetime_period = datetime_period.replace(minute=(datetime_period.minute // accuracy_in_minutes) * accuracy_in_minutes)
+
     if settings and hasattr(settings, "DJANGO_CLOUDWATCH_METRICS") and not settings.DJANGO_CLOUDWATCH_METRICS:
         return
 
