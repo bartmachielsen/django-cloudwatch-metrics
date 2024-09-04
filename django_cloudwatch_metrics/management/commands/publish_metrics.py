@@ -36,11 +36,11 @@ def publish_metrics():
         )
         metric_data.append(
             {
-                "MetricName": metric_name,
+                "MetricName": metric_name.encode("ascii", "ignore").decode(),
                 "Dimensions": [
                     {
-                        "Name": dimension_name,
-                        "Value": dimension_value
+                        "Name": dimension_name.encode("ascii", "ignore").decode(),
+                        "Value": dimension_value.encode("ascii", "ignore").decode()
                     }
                     for dimension_name, dimension_value in (dimension_data or {}).items()
                     if dimension_name and dimension_value
