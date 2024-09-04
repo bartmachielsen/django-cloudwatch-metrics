@@ -28,7 +28,7 @@ def increment(metric_name: str, value: int, **kwargs):
         return
 
     # Convert all kwargs to strings
-    kwargs = {k: str(v) for k, v in kwargs.items()}
+    kwargs = {k.encode("ascii", "ignore").decode(): str(v).encode("ascii", "ignore").decode() for k, v in kwargs.items()}
 
     aggregation_key = create_cache_key(
         metric_name,
@@ -41,7 +41,7 @@ def increment(metric_name: str, value: int, **kwargs):
             aggregation_key=aggregation_key,
             defaults={
                 "datetime_period":  datetime_period,
-                "metric_name": metric_name,
+                "metric_name": metric_name.encode("ascii", "ignore").decode(),
                 "dimension_data": kwargs,
                 "value": value,
             }
